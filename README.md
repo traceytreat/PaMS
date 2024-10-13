@@ -6,6 +6,7 @@ ICS 499 project
 # Instructions for Mac
 ## Setup
 Need python installed, and using python install flask. 
+Also you should install node.js using the terminal.
 
 Clone this project with `git clone` 
 
