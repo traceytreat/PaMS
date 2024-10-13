@@ -5,6 +5,8 @@ ICS 499 project
 
 # Instructions for Mac
 ## Setup
+Need python installed, and using python install flask. 
+
 Clone this project with `git clone` 
 
 In terminal, navigate to the folder with this repo.
