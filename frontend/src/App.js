@@ -3,49 +3,62 @@
 // From https://www.geeksforgeeks.org/how-to-connect-reactjs-with-flask-api/
 
 // Importing modules
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./App.css";
+import styled from "styled-components";
+import {MainLayout} from './styles/Layouts';
+import NavigationBar from "./navigationBar/NavigationBar";
+import Checkout from "./Components/Checkout/Checkout";
+import Inventory from "./Components/Inventory/Inventory";
+import Reports from "./Components/Reports/Reports";
+import Members from "./Components/Members/Members";
 
 function App() {
-    // usestate for setting a javascript
-    // object for storing and using data
-    const [data, setdata] = useState({
-        name: "",
-        age: 0,
-        date: "",
-        programming: "",
-    });
+    const [active, setActive] = React.useState(1)
 
-    // Using useEffect for single rendering
-    useEffect(() => {
-        // Using fetch to fetch the api from 
-        // flask server it will be redirected to proxy
-        fetch("/data").then((res) =>
-            res.json().then((data) => {
-                // Setting a data from api
-                setdata({
-                    name: data.Name,
-                    age: data.Age,
-                    date: data.Date,
-                    programming: data.programming,
-                });
-            })
-        );
-    }, []);
-
+    const displayData = () => {
+        switch(active) {
+            case 1:
+                return <Checkout />
+            case 2:
+                return <Inventory />
+            case 3:
+                return <Reports />
+            case 4:
+                return <Members />
+            default:
+                return <Checkout />
+        }
+    }
     return (
-        <div className="App">
-            <header className="App-header">
-                <h1>React and flask</h1>
-                {/* Calling a data from setdata for showing */}
-                <p>{data.name}</p>
-                <p>{data.age}</p>
-                <p>{data.date}</p>
-                <p>{data.programming}</p>
-
-            </header>
-        </div>
+        <AppStyled className="App">
+            <MainLayout>
+                <NavigationBar active={active} setActive={setActive} />
+                <main>
+                    {displayData()}
+                </main>
+            </MainLayout>
+        </AppStyled>
     );
 }
+
+const AppStyled = styled.div`
+    height: 100vh;
+    background: linear-gradient(45deg, #AFD275, #D0E5A0);
+    position: relative;
+
+    main {
+        flex: 1;
+        background: rgba(252, 246, 249, 0.78);
+        border: 3px solid #FFFFFF;
+        backdrop-filter: blur(4.5px);
+        border-radius: 32px;
+        overflow-x: hidden;
+        &::-webkit-scrollbar{
+            width: 0;
+        }
+    }
+
+`;
 
 export default App;
