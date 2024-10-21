@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
+from flask_cors import CORS
 from datetime import date
 
 db_path = "sqlite:///pams.db"
@@ -13,11 +14,13 @@ class user(base):
     id = Column(Integer, primary_key=True)
     username = Column(String)
     password = Column(String)
+    techid = Column(Integer)
     role = Column(String)
 
-class customer(base):
-    __tablename__ = "customers"
+class members(base):
+    __tablename__ = "members"
     id = Column(Integer, primary_key=True)
+    techid = Column(Integer)
     firstname = Column(String)
     lastname = Column(String)
     address = Column(String)
@@ -40,7 +43,7 @@ class inventory(base):
 class visits(base):
     __tablename__ = "visits"
     id = Column(Integer, primary_key=True)
-    customerid = Column(Integer, ForeignKey("customers.id"))
+    memberid = Column(Integer, ForeignKey("members.id"))
     poundstaken = Column(Integer)
     visitdate = Column(DateTime)
 
@@ -50,6 +53,7 @@ class discard(base):
     id = Column(Integer, primary_key=True)
     sku = Column(String)
     quantity = Column(Integer)
+    reason = Column(String)
     userid = Column(Integer, ForeignKey("users.id"))
     discarddate = Column(DateTime)
 
@@ -67,3 +71,8 @@ class reports(base):
     discarded = Column(Integer)
 
 base.metadata.create_all(engine)
+session_local = sessionmaker(bind=engine)
+session_local = session_local()
+
+def get_db_session():
+    return session_local
