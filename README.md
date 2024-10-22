@@ -5,8 +5,11 @@ ICS 499 project
 
 # Instructions for Mac
 ## Setup
-Need python installed, and using python install flask. 
-Also you should install node.js using the terminal.
+Need python3 installed, and using python3 install flask and sqlalchemy. 
+
+You may also need to install other python modules like flask_cors.
+
+Also, you should install node.js using the terminal.
 
 Clone this project with `git clone` 
 
@@ -20,7 +23,7 @@ Run `npm install`
 
 Navigate to the backend folder.
 
-Run `python server.py`
+Run `python3 server.py`
 
 The server should now be running.
 
