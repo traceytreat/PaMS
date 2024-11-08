@@ -7,26 +7,40 @@ from flask_cors import CORS
 from database import user, members, inventory, get_db_session
 # Initializing flask app
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
+@app.route('/api/<path:path>', methods=['OPTIONS'])
+def handle_options(path):
+    return '', 204
 
 @app.route('/api/inventory', methods=['GET'])
 def get_inventory():
-    session = get_db_session()
-    inventories = session.query(inventory).all()
-    inventory_list = [{'sku': item.sku, 'name': item.name} for item in inventories]
-    session.close()
+    with get_db_session() as session:
+        inventories = session.query(inventory).all()
+        inventory_list = [{'id': item.id, 'sku': item.sku, 'name': item.name} for item in inventories]
+
     return jsonify(inventory_list)
 
 @app.route('/api/inventory', methods=['POST'])
 def add_inventory():
     inventory_data = request.json
-    session = get_db_session()
-    new_item = inventory(sku=inventory_data['sku'], name=inventory_data['name'])
-    session.add(new_item)
-    session.commit()
-    session.close()
+    with get_db_session() as session:
+        new_item = inventory(sku=inventory_data['sku'], name=inventory_data['name'])
+        session.add(new_item)
+        session.commit()
+
     return jsonify({'message': 'Item added successfully!'}), 201
+
+@app.route('/api/inventory/<int:item_id>', methods=['DELETE'])
+def delete_inventory(item_id):
+    with get_db_session() as session:
+        item_delete = session.query(inventory).get(item_id)
+        if item_delete:
+            session.delete(item_delete)
+            session.commit()
+            return jsonify({'message': 'Item deleted successfully!'}), 200
+        else:
+            return jsonify({'error': 'Item not found'}), 404
 
 @app.route('/api/users', methods=['GET'])
 def get_users():
