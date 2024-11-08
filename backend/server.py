@@ -64,6 +64,21 @@ def add_members():
     session.close()
     return jsonify({'message': 'member added successfully!'}), 201
 
+@app.route('/api/login', methods=['POST'])
+def login():
+    login_data = request.json
+    session = get_db_session()
+    username = login_data.get('username')
+    password = login_data.get('password')
+
+    user_instance = session.query(user).filter_by(username=username).first()
+
+    if user_instance and user_instance.password == password:
+        session.close()
+        return jsonify({'username': user_instance.username, 'role': user_instance.role, 'techid': user_instance.techid, 'message': 'Login successful'}), 200
+    else:
+        session.close()
+        return jsonify({'message': 'Invalid username or password'}), 401
     
 # Running app
 if __name__ == '__main__':
