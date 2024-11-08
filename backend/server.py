@@ -62,21 +62,6 @@ def delete_inventory(item_id):
         else:
             return jsonify({'error': 'Item not found'}), 404
 
-@app.route('/api/inventory/<int:item_id>', methods=['PATCH'])
-def update_inventory(item_id):
-    with get_db_session() as session:
-        item = session.query(inventory).get(item_id)
-        if item:
-            quantity_change = request.json.get('quantity', 0)
-            if quantity_change != 0:
-                item.quantity += quantity_change
-                session.commit()
-                return jsonify({'message': f'Updated qty by {quantity_change}'}), 200
-            else:
-                return jsonify({'error': 'Error with qty update'}), 400
-        else:
-            return jsonify({'error': 'Item not found'}), 404
-
 @app.route('/api/users', methods=['GET'])
 def get_users():
     session = get_db_session()

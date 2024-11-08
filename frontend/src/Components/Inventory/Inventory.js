@@ -22,21 +22,12 @@ const Inventory = () => {
     console.log('in deleteitem');
     const confirm = window.confirm("Delete item " + id + "?");
     if (confirm) {
-      if (quantity > 1) {
-        axios.patch(`http://localhost:5000/api/inventory/${id}`, { quantity: -1 })
-          .then(() => {
-            fetchInventory();
-            alert("Decreased quantity of item with ID " + id); 
-          })
-          .catch(error => console.error('Error updating item quantity:', error));
-      } else {
-        axios.delete(`http://localhost:5000/api/inventory/${id}`)
-          .then(() => {
-            fetchInventory();
-            alert("Deleted item with ID " + id);
-          })
-          .catch(error => console.error('Error deleting item:', error));
-      }
+      axios.delete(`http://localhost:5000/api/inventory/${id}`)
+        .then(() => {
+          fetchInventory();
+          alert("Deleted item with ID " + id);
+        })
+        .catch(error => console.error('Error deleting item:', error));
     } else {
       console.log("Deletion canceled");
     }
