@@ -20,14 +20,25 @@ const Inventory = () => {
   };
   const deleteitem = (id, quantity) => {
     console.log('in deleteitem');
-    if (quantity > 1) {
-      axios.patch(`http://localhost:5000/api/inventory/${id}`, { quantity: -1 })
-        .then(() => fetchInventory())
-        .catch(error => console.error('Error updating item quantity:', error));
+    const confirm = window.confirm("Delete item " + id + "?");
+    if (confirm) {
+      if (quantity > 1) {
+        axios.patch(`http://localhost:5000/api/inventory/${id}`, { quantity: -1 })
+          .then(() => {
+            fetchInventory();
+            alert("Decreased quantity of item with ID " + id); 
+          })
+          .catch(error => console.error('Error updating item quantity:', error));
+      } else {
+        axios.delete(`http://localhost:5000/api/inventory/${id}`)
+          .then(() => {
+            fetchInventory();
+            alert("Deleted item with ID " + id);
+          })
+          .catch(error => console.error('Error deleting item:', error));
+      }
     } else {
-      axios.delete(`http://localhost:5000/api/inventory/${id}`)
-        .then(() => fetchInventory())
-        .catch(error => console.error('Error deleting item:', error));
+      console.log("Deletion canceled");
     }
   };
 
@@ -37,6 +48,7 @@ const Inventory = () => {
     axios.post('http://localhost:5000/api/inventory', newItem)
       .then(response => {
         fetchInventory();  // fetch updated inventory after adding item
+        alert("Added item " + name + " with sku " + sku);
         Setsku('');
         Setname('');
       })
