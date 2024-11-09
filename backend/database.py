@@ -41,15 +41,15 @@ class inventory(base):
 
 
 class visits(base):
-    __tablename__ = "visits"
+    __tablename__ = "transactions"
     id = Column(Integer, primary_key=True)
     memberid = Column(Integer, ForeignKey("members.id"))
     poundstaken = Column(Integer)
     visitdate = Column(DateTime)
 
     
-class discard(base):
-    __tablename__ = "discard"
+class discardedItems(base):
+    __tablename__ = "discardedItems"
     id = Column(Integer, primary_key=True)
     sku = Column(String)
     quantity = Column(Integer)
