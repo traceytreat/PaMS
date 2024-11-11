@@ -1,64 +1,85 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
 import Logo from '../../img/Logo.png'
 
 const Inventory = () => {
-    const [inventory, setInventory] = useState([]);
-    const [sku, Setsku] = useState('');
-    const [name, Setname] = useState('');
-  
-    // Fetch users from Flask API
-    useEffect(() => {
-      axios.get('http://localhost:5000/api/inventory')
-        .then(response => setInventory(response.data))
-        .catch(error => console.error('Error fetching inventory:', error));
-    }, []);
+  const [inventory, setInventory] = useState([]);
+  const [sku, Setsku] = useState('');
+  const [name, Setname] = useState('');
 
-const additem = (e) => {
+  // Fetch users from Flask API
+  useEffect(() => {
+    fetchInventory();
+  }, []);
+
+  const fetchInventory = () => {
+    axios.get('http://localhost:5000/api/inventory')
+      .then(response => setInventory(response.data))
+      .catch(error => console.error('Error fetching inventory:', error));
+  };
+  const deleteitem = (id, quantity) => {
+    console.log('in deleteitem');
+    const confirm = window.confirm("Delete item " + id + "?");
+    if (confirm) {
+      axios.delete(`http://localhost:5000/api/inventory/${id}`)
+        .then(() => {
+          fetchInventory();
+          alert("Deleted item with ID " + id);
+        })
+        .catch(error => console.error('Error deleting item:', error));
+    } else {
+      console.log("Deletion canceled");
+    }
+  };
+
+  const additem = (e) => {
     e.preventDefault();
-    const newItems = { sku, name };
-   
-    axios.post('http://localhost:5000/api/inventory', newItems)
-        .then(response => {
-        console.log(response.data);
-        setInventory([...inventory, newItems]);  // Add the new user to the current list
+    const newItem = { sku, name };
+    axios.post('http://localhost:5000/api/inventory', newItem)
+      .then(response => {
+        fetchInventory();  // fetch updated inventory after adding item
+        alert("Added item " + name + " with sku " + sku);
         Setsku('');
         Setname('');
-        })
-        .catch(error => console.error('Error adding item:', error));
-    };
+      })
+      .catch(error => console.error('Error adding item:', error));
+  };
 
-    return (
-        <div>
-          <h1>Inventory</h1>
-          <ul>
-            {inventory.map((item, index) => (
-              <li key={index}>{item.sku} - {item.name}</li>
-            ))}
-          </ul>
-    
-          <h2>Add item</h2>
-          <form onSubmit={additem}>
-            <input
-              type="text"
-              value={sku}
-              onChange={(e) => Setsku(e.target.value)}
-              placeholder="sku"
-              required
-            />
-            <input
-              type="name"
-              value={name}
-              onChange={(e) => Setname(e.target.value)}
-              placeholder="name"
-              required
-            />
-            <button type="submit">Add item</button>
-          </form>
-        </div>
-      );
-    };
+
+  return (
+    <div>
+      <h1>Inventory</h1>
+      <ul>
+        {inventory.map((item, index) => (
+          <li key={index}>{item.sku} - {item.name} - Qty: {item.quantity}
+            <button onClick={() => deleteitem(item.id)}>Delete</button>
+          </li>
+
+        ))}
+      </ul>
+
+      <h2>Add item</h2>
+      <form onSubmit={additem}>
+        <input
+          type="text"
+          value={sku}
+          onChange={(e) => Setsku(e.target.value)}
+          placeholder="sku"
+          required
+        />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => Setname(e.target.value)}
+          placeholder="name"
+          required
+        />
+        <button type="submit">Add item</button>
+      </form>
+    </div>
+  );
+};
 
 
 // function Inventory() {
