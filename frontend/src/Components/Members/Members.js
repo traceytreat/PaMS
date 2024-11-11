@@ -7,6 +7,12 @@ const Members = () => {
     const [members, setMembers] = useState([]);
     const [firstname, SetFirstname] = useState('');
     const [lastname, setLastname] = useState('');
+    const [techid, setTechid] = useState('');
+    const [address, setAdress] = useState();
+    const [minors, SetMinors] = useState('');
+    const [adults, setAdults] = useState('');
+    const [seniors, setSeniors] = useState('');
+    const [intakedate, setIntakedate] = useState('');
   
     // Fetch users from Flask API
     useEffect(() => {
@@ -17,7 +23,7 @@ const Members = () => {
 
 const addMember = (e) => {
     e.preventDefault();
-    const newMembers = { firstname, lastname };
+    const newMembers = { firstname, lastname, techid, address, minors, adults, seniors, intakedate};
    
     axios.post('http://localhost:5000/api/members', newMembers)
         .then(response => {
@@ -25,6 +31,7 @@ const addMember = (e) => {
         setMembers([...members, newMembers]);  // Add the new user to the current list
         SetFirstname('');
         setLastname('');
+        
         })
         .catch(error => console.error('Error adding user:', error));
     };
@@ -34,7 +41,7 @@ const addMember = (e) => {
           <h1>Member List</h1>
           <ul>
             {members.map((member, index) => (
-              <li key={index}>{member.firstname} - {member.lastname}</li>
+              <li key={index}>{member.firstname} - {member.lastname} - {member.techid} - {member.address} - {member.minors} - {member.adults} - {member.seniors} - {member.intakedate}</li>
             ))}
           </ul>
     
@@ -52,6 +59,41 @@ const addMember = (e) => {
               value={lastname}
               onChange={(e) => setLastname(e.target.value)}
               placeholder="Lastname"
+              required
+            />
+            <input
+              type="techid"
+              value={techid}
+              onChange={(e) => setTechid(e.target.value)}
+              placeholder="Tech id"
+              required
+            />
+            <input
+              type="address"
+              value={address}
+              onChange={(e) => setAdress(e.target.value)}
+              placeholder="Address"
+              required
+            />
+            <input
+              type="minors"
+              value={minors}
+              onChange={(e) => SetMinors(e.target.value)}
+              placeholder="Minors"
+              required
+            />
+            <input
+              type="adults"
+              value={adults}
+              onChange={(e) => setAdults(e.target.value)}
+              placeholder="Adults"
+              required
+            />
+            <input
+              type="seniors"
+              value={seniors}
+              onChange={(e) => setSeniors(e.target.value)}
+              placeholder="seniors"
               required
             />
             <button type="submit">Add member</button>

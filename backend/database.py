@@ -1,7 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, func
 from sqlalchemy.orm import sessionmaker, declarative_base
 from flask_cors import CORS
-from datetime import date
 
 db_path = "sqlite:///pams.db"
 
@@ -27,16 +26,14 @@ class members(base):
     householdminors = Column(Integer)
     householdadults = Column(Integer)
     householdseniors = Column(Integer)
-    intakedate = Column(DateTime)
-
-
+    intakedate = Column(DateTime, default=func.now())
 
 class inventory(base):
     __tablename__ = "inventory"
     id = Column(Integer, primary_key=True)
     sku = Column(String)
     name = Column(String)
-    expiration = Column(DateTime)
+    expiration = Column(String)
     quantity = Column(Integer)
 
 
@@ -45,7 +42,7 @@ class visits(base):
     id = Column(Integer, primary_key=True)
     memberid = Column(Integer, ForeignKey("members.id"))
     poundstaken = Column(Integer)
-    visitdate = Column(DateTime)
+    visitdate = Column(DateTime, default=func.now())
 
     
 class discardedItems(base):
@@ -55,20 +52,7 @@ class discardedItems(base):
     quantity = Column(Integer)
     reason = Column(String)
     userid = Column(Integer, ForeignKey("users.id"))
-    discarddate = Column(DateTime)
-
-class reports(base):
-    __tablename__ = "reports"
-    id = Column(Integer, primary_key=True)
-    reportdate = Column(DateTime)
-    numbervisits = Column(Integer)
-    newintakes = Column(Integer)
-    householdserved = Column(Integer)
-    householdminors = Column(Integer)
-    householdadults = Column(Integer)
-    householdseniors = Column(Integer)    
-    totalpounds = Column(Integer)
-    discarded = Column(Integer)
+    discarddate = Column(DateTime, default=func.now())
 
 base.metadata.create_all(engine)
 session_local = sessionmaker(bind=engine)
