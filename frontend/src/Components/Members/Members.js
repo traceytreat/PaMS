@@ -12,8 +12,7 @@ const Members = () => {
     const [minors, SetMinors] = useState('');
     const [adults, setAdults] = useState('');
     const [seniors, setSeniors] = useState('');
-    const [intakedate, setIntakedate] = useState('');
-  
+
     // Fetch users from Flask API
     useEffect(() => {
       axios.get('http://localhost:5000/api/members')
@@ -23,7 +22,7 @@ const Members = () => {
 
 const addMember = (e) => {
     e.preventDefault();
-    const newMembers = { firstname, lastname, techid, address, minors, adults, seniors, intakedate};
+    const newMembers = { firstname, lastname, techid, address, minors, adults, seniors};
    
     axios.post('http://localhost:5000/api/members', newMembers)
         .then(response => {

@@ -50,5 +50,8 @@ def showPoundsTaken(memberid):
             ).scalar()
         )
         return results or 0
+    
+#def showVisitCount():
 
+#def showHouseholdTotal():
 

@@ -18,6 +18,20 @@ def handle_options(path):
     return "", 204
 
 
+@app.route("/api/report/totaltaken", methods=["GET"])
+def memberTaken():
+    memberid = request.args.get("member_id", type=int)
+    if memberid is None:
+        return jsonify({"Error": "Member not found"}), 404
+    total = showPoundsTaken(memberid)
+    return jsonify(total)
+
+
+@app.route("/app/report/totalpoundstaken", methods=["GET"])
+def totalpoundstaken():
+    return jsonify(showTotalPoundsTaken())
+
+
 @app.route("/api/inventory", methods=["GET"])
 def get_inventory():
     with get_db_session() as session:
@@ -76,7 +90,7 @@ def get_discardeditems():
         {
             "sku": item.sku,
             "quantity": item.quantity,
-            "reason": item.reaons,
+            "reason": item.reason,
             "discarddate": item.discarddate,
         }
         for item in items
@@ -144,6 +158,20 @@ def delete_inventory(item_id):
                 return jsonify({"message": "Item deleted successfully!"}), 200
         else:
             return jsonify({"error": "Item not found"}), 404
+
+
+@app.route("/api/discardedItems", methods=["POST"])
+def add_discardedItems():
+    itemdata = request.json
+    session = get_db_session()
+    new_discarded = discardedItems(
+        sku=itemdata["sku"], quantity=itemdata["quantity"], reason=itemdata["reason"]
+    )
+    session.add(new_discarded)
+    session.commit()
+    session.close()
+    return jsonify({"message": "Added succesfully"}, 201)
+    
 
 
 @app.route("/api/users", methods=["POST"])

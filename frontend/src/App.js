@@ -12,6 +12,7 @@ import Checkout from "./Components/Checkout/Checkout";
 import Inventory from "./Components/Inventory/Inventory";
 import Reports from "./Components/Reports/Reports";
 import Members from "./Components/Members/Members";
+import DiscardedItems from "./Components/DiscardedItems/DiscardedItems";
 
 function App() {
     const [active, setActive] = React.useState(1)
@@ -26,6 +27,8 @@ function App() {
                 return <Reports />
             case 4:
                 return <Members />
+            case 5:
+                return <DiscardedItems />
             default:
                 return <Checkout />
         }
