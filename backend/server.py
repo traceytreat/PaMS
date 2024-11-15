@@ -5,8 +5,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from database import user, members, inventory, discardedItems, get_db_session
-from datetime import datetime, date
-from reportgenerator import showNewIntakes, showPoundsTaken, showTotalPoundsTaken
+from reportgenerator import *
 
 # Initializing flask app
 app = Flask(__name__)
@@ -18,6 +17,12 @@ def handle_options(path):
     return "", 204
 
 
+@app.route("/api/data", methods=["GET"])
+def populatedb():
+    populate_db()
+    return "", 201
+
+
 @app.route("/api/report/totaltaken", methods=["GET"])
 def memberTaken():
     memberid = request.args.get("member_id", type=int)
@@ -27,9 +32,25 @@ def memberTaken():
     return jsonify(total)
 
 
-@app.route("/app/report/totalpoundstaken", methods=["GET"])
+@app.route("/api/report/totalpoundstaken", methods=["GET"])
 def totalpoundstaken():
     return jsonify(showTotalPoundsTaken())
+
+
+@app.route("/api/report", methods=["GET"])
+def get_reports():
+    intakes = showNewIntakes()
+    poundsTotal = showTotalPoundsTaken()
+    visitsTotal = showVisitCount()
+    householdTotal = showHouseholdTotal()
+    payload =         {
+            "newIntakes": intakes,
+            "totalPoundTaken": poundsTotal,
+            "totalVisits": visitsTotal,
+            "householdTotal": householdTotal,
+        }
+
+    return jsonify(payload)
 
 
 @app.route("/api/inventory", methods=["GET"])
@@ -67,6 +88,7 @@ def get_members():
     print(showPoundsTaken(1))
     member_list = [
         {
+            "id": member.id,
             "firstname": member.firstname,
             "lastname": member.lastname,
             "techid": member.techid,
@@ -171,7 +193,6 @@ def add_discardedItems():
     session.commit()
     session.close()
     return jsonify({"message": "Added succesfully"}, 201)
-    
 
 
 @app.route("/api/users", methods=["POST"])

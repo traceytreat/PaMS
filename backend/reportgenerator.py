@@ -35,23 +35,81 @@ def showTotalPoundsTaken():
         )
         totalTaken = {result.month: result.totaltaken for result in results}
         return totalTaken
-    
+
+
 def showPoundsTaken(memberid):
     current_year = datetime.now().year
     current_month = datetime.now().month
-
     with get_db_session() as session:
         results = (
-            session.query(func.sum(visits.poundstaken).label('totalTaken'))
+            session.query(func.sum(visits.poundstaken).label("totalTaken"))
             .filter(
                 members.id == memberid,
-                extract('year', visits.visitdate) == current_year,
-                extract('month', visits.visitdate) == current_month
-            ).scalar()
+                extract("year", visits.visitdate) == current_year,
+                extract("month", visits.visitdate) == current_month,
+            )
+            .scalar()
         )
         return results or 0
-    
-#def showVisitCount():
 
-#def showHouseholdTotal():
 
+def showVisitCount():
+    with get_db_session() as session:
+        results = (
+            session.query(
+                func.strftime("%Y-%m", visits.visitdate).label("month"),
+                func.count(visits.id).label("visitcount"),
+                func.count(func.distinct(visits.memberid)).label("uniquevisit"),
+            )
+            .group_by("month")
+            .order_by("month")
+            .all()
+        )
+        visitcount = [
+            {
+                "month": row.month,
+                "visitcount": row.visitcount,
+                "uniqueVisits": row.uniquevisit,
+            }
+            for row in results
+        ]
+        return visitcount
+
+
+def showHouseholdTotal():
+    with get_db_session() as session:
+        results = (
+            session.query(
+                extract("year", visits.visitdate).label("year"),
+                extract("month", visits.visitdate).label("month"),
+                func.sum(members.householdadults).label("adults"),
+                func.sum(members.householdminors).label("minors"),
+                func.sum(members.householdseniors).label("seniors"),
+                (
+                    func.sum(members.householdadults)
+                    + func.sum(members.householdminors)
+                    + func.sum(members.householdseniors)
+                ).label("householdTotal"),
+            )
+            .group_by(
+                extract("year", visits.visitdate), extract("month", visits.visitdate)
+            )
+            .order_by(
+                extract("year", visits.visitdate), extract("month", visits.visitdate)
+            )
+            .all()
+        )
+
+        householdTotal = [
+            {
+                "year": row.year,
+                "month": row.month,
+                "adults": row.adults,
+                "minors": row.minors,
+                "seniors": row.seniors,
+                "householdTotal": row.householdTotal,
+            }
+            for row in results
+        ]
+
+        return householdTotal

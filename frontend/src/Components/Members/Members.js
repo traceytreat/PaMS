@@ -20,20 +20,20 @@ const Members = () => {
         .catch(error => console.error('Error fetching members:', error));
     }, []);
 
-const addMember = (e) => {
-    e.preventDefault();
-    const newMembers = { firstname, lastname, techid, address, minors, adults, seniors};
-   
-    axios.post('http://localhost:5000/api/members', newMembers)
-        .then(response => {
-        console.log(response.data);
-        setMembers([...members, newMembers]);  // Add the new user to the current list
-        SetFirstname('');
-        setLastname('');
-        
-        })
-        .catch(error => console.error('Error adding user:', error));
-    };
+    const addMember = (e) => {
+        e.preventDefault();
+        const newMembers = { firstname, lastname, techid, address, minors, adults, seniors};
+      
+        axios.post('http://localhost:5000/api/members', newMembers)
+            .then(response => {
+            console.log(response.data);
+            setMembers([...members, newMembers]);  // Add the new user to the current list
+            SetFirstname('');
+            setLastname('');
+            
+            })
+            .catch(error => console.error('Error adding user:', error));
+        };
 
     return (
         <div>
