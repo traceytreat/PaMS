@@ -5,3 +5,4 @@ backend/__pycache__
 backend/__init__.py
 backend/.DS_Store
 .DS_Store
+pams.db
