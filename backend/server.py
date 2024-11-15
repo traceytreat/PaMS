@@ -38,7 +38,7 @@ def get_members():
     return jsonify(member_list)
 
 @app.route('/api/discardedItems', methods=['GET'])
-def get_members():
+def get_discarded_items():
     session = get_db_session()
     items = session.query(discardedItems).all()
     discardedItems_list = [{'sku': item.sku, 'quantity': item.quantity, 'reason': item.reaons, 'discarddate': item.discarddate} for item in items]
@@ -46,7 +46,7 @@ def get_members():
     return jsonify(discardedItems_list)
 
 @app.route('/api/reports', methods=['GET'])
-def get_members():
+def get_reports():
     session = get_db_session()
     reports = session.query(reports).all()
     report_list = [{'numbersisits': report.numbervisits, 'newintakes': report.newintakes, 'HousesServed': report.householdserved, 'totalpounds': report.totalpounds,'discarded': report.discarded} for report in reports]
@@ -114,7 +114,6 @@ def add_members():
     session.close()
     return jsonify({'message': 'member added successfully!'}), 201
     
-=======
 @app.route('/api/members/<int:memberid>', methods=['PUT'])
 def update_member(memberid):
     user_data = request.json
