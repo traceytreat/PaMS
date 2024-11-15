@@ -16,13 +16,6 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 def handle_options(path):
     return "", 204
 
-
-@app.route("/api/data", methods=["GET"])
-def populatedb():
-    populate_db()
-    return "", 201
-
-
 @app.route("/api/report/totaltaken", methods=["GET"])
 def memberTaken():
     memberid = request.args.get("member_id", type=int)
