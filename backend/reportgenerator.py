@@ -7,34 +7,32 @@ from sqlalchemy import func, extract
 app = Flask(__name__)
 
 
-def showNewIntakes():
+def showNewIntakes(month, year):
     with get_db_session() as session:
         results = (
             session.query(
-                func.strftime("%Y-%m", members.intakedate).label("month"),
                 func.count(members.id).label("membercount"),
             )
-            .group_by("month")
-            .order_by("month")
-            .all()
+            .filter(extract('year', members.intakedate) == year)
+            .filter(extract('month', members.intakedate) == month)
+            .first()
         )
-        memberCounts = {result.month: result.membercount for result in results}
-        return memberCounts
+        return results.membercount or 0
+    
 
 
-def showTotalPoundsTaken():
+def showTotalPoundsTaken(month, year):
     with get_db_session() as session:
         results = (
             session.query(
-                func.strftime("%Y-%m", visits.visitdate).label("month"),
                 func.sum(visits.poundstaken).label("totaltaken"),
             )
-            .group_by("month")
-            .order_by("month")
-            .all()
+            .filter(extract('year', visits.visitdate) == year)
+            .filter(extract('month', visits.visitdate) == month)
+            .first()
         )
-        totalTaken = {result.month: result.totaltaken for result in results}
-        return totalTaken
+        return results.totaltaken or 0
+
 
 
 def showPoundsTaken(memberid):
@@ -53,63 +51,40 @@ def showPoundsTaken(memberid):
         return results or 0
 
 
-def showVisitCount():
+def showVisitCount(month, year):
     with get_db_session() as session:
         results = (
             session.query(
-                func.strftime("%Y-%m", visits.visitdate).label("month"),
                 func.count(visits.id).label("visitcount"),
                 func.count(func.distinct(visits.memberid)).label("uniquevisit"),
             )
-            .group_by("month")
-            .order_by("month")
-            .all()
+            .filter(extract('year', visits.visitdate) == year)
+            .filter(extract('month', visits.visitdate) == month)
+            .first()
         )
-        visitcount = [
-            {
-                "month": row.month,
-                "visitcount": row.visitcount,
-                "uniqueVisits": row.uniquevisit,
-            }
-            for row in results
-        ]
-        return visitcount
+        return {
+            "total": results.visitcount,
+            "uniqueVisit": results.uniquevisit
+        }
 
 
-def showHouseholdTotal():
+def showHouseholdTotal(month, year):
     with get_db_session() as session:
         results = (
             session.query(
-                extract("year", visits.visitdate).label("year"),
-                extract("month", visits.visitdate).label("month"),
-                func.sum(members.householdadults).label("adults"),
-                func.sum(members.householdminors).label("minors"),
-                func.sum(members.householdseniors).label("seniors"),
-                (
-                    func.sum(members.householdadults)
-                    + func.sum(members.householdminors)
-                    + func.sum(members.householdseniors)
-                ).label("householdTotal"),
+                func.sum(members.householdadults).filter(members.id == visits.memberid).label("adults"),
+                func.sum(members.householdminors).filter(members.id == visits.memberid).label("minors"),
+                func.sum(members.householdseniors).filter(members.id == visits.memberid).label("seniors")
             )
-            .group_by(
-                extract("year", visits.visitdate), extract("month", visits.visitdate)
-            )
-            .order_by(
-                extract("year", visits.visitdate), extract("month", visits.visitdate)
-            )
-            .all()
+            .filter(extract('year', visits.visitdate) == year)
+            .filter(extract('month', visits.visitdate) == month)
+            .first()
         )
+        householdTotal = results.adults + results.minors + results.seniors
 
-        householdTotal = [
-            {
-                "year": row.year,
-                "month": row.month,
-                "adults": row.adults,
-                "minors": row.minors,
-                "seniors": row.seniors,
-                "householdTotal": row.householdTotal,
-            }
-            for row in results
-        ]
-
-        return householdTotal
+        return {
+            "adults": results.adults,
+            "minors": results.minors,
+            "seniors": results.seniors,
+            "total": householdTotal
+        }

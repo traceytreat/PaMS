@@ -32,10 +32,12 @@ def totalpoundstaken():
 
 @app.route("/api/report", methods=["GET"])
 def get_reports():
-    intakes = showNewIntakes()
-    poundsTotal = showTotalPoundsTaken()
-    visitsTotal = showVisitCount()
-    householdTotal = showHouseholdTotal()
+    month = request.args.get("month", type=int)
+    year = request.args.get("year", type=int)
+    intakes = showNewIntakes(month, year)
+    poundsTotal = showTotalPoundsTaken(month, year)
+    visitsTotal = showVisitCount(month, year)
+    householdTotal = showHouseholdTotal(month, year)
     payload =         {
             "newIntakes": intakes,
             "totalPoundTaken": poundsTotal,
@@ -191,7 +193,7 @@ def add_discardedItems():
 def add_user():
     user_data = request.json
     session = get_db_session()
-    new_user = members(username=user_data["username"], role=user_data["role"])
+    new_user = user(username=user_data["username"], password=user_data["password"] ,role=user_data["role"])
     session.add(new_user)
     session.commit()
     session.close()
