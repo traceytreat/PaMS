@@ -4,16 +4,16 @@ import avatar from '../img/avatar.png'
 import { signout } from '../utils/Icons'
 import { MenuItems } from '../utils/MenuItems'
 
-function Navigation({active, setActive}) {
+function Navigation({ active, setActive, username, role, techid, onLogout}) {
     
     return (
         <NavStyled>
             <div className="user-con">
                 <img src={avatar} alt="" />
                 <div className="text">
-                    <h2>Username</h2>
-                    <p>Role</p>
-                    <p>Tech ID</p>
+                    <h2>{username}</h2>
+                    <p>{role}</p>
+                    <p>{techid}</p>
                 </div>
             </div>
             <ul className="menu-items">
@@ -29,7 +29,7 @@ function Navigation({active, setActive}) {
                 })}
             </ul>
             <div className="bottom-nav">
-                <li>
+                <li onClick={onLogout}>
                     {signout} Sign Out
                 </li>
             </div>
@@ -62,7 +62,7 @@ const NavStyled = styled.nav`
         img {
             width: 80px;
             height: 80px;
-            border-radius: 50%;
+            border-radius: 100%;
             object-fit: cover;
             border: 3px solid #AFD275;
         }
@@ -96,6 +96,7 @@ const NavStyled = styled.nav`
         span {
             width: 100px;
         }
+    }
     .active{
         color: rgba(34, 34, 96, 1);
         i{
@@ -111,6 +112,14 @@ const NavStyled = styled.nav`
             background: #222260;
             border-radius: 10px 10px 10px 10px;
         }
+    }
+    .bottom-nav{
+        color: rgba(34, 34, 96, 0.6);
+        font-weight: bold;
+    }
+    .bottom-nav:hover {
+        color: red;
+        cursor: pointer;
     }
 `;
 

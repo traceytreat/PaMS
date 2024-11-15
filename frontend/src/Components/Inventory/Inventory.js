@@ -1,17 +1,67 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
+import Quagga from 'quagga';
 import Logo from '../../img/Logo.png'
 
 const Inventory = () => {
   const [inventory, setInventory] = useState([]);
   const [sku, Setsku] = useState('');
   const [name, Setname] = useState('');
+  const [barcode, setBarcode] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // Fetch users from Flask API
   useEffect(() => {
     fetchInventory();
   }, []);
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        Quagga.decodeSingle({
+          src: e.target.result,
+          numOfWorkers: 0,
+          inputStream: {
+            size: 800
+          },
+          decoder: {
+            readers: ['code_128_reader', 'ean_reader', 'ean_8_reader']
+          }
+        }, async (result) => {
+          if (result && result.codeResult) {
+            setBarcode(result.codeResult.code);
+            Setsku(result.codeResult.code); 
+            fetchProductName(result.codeResult.code); 
+          } else {
+            console.error('no barcode found');
+          }
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const fetchProductName = async (sku) => {
+    setLoading(true);
+    try {
+      const cleanSku = sku.replace(/\s/g, '').trim();
+      const response = await axios.get(`https://api.allorigins.win/raw?url=https://api.upcitemdb.com/prod/trial/lookup?upc=${cleanSku}`);
+      console.log(response.data)
+      if (response.data.items && response.data.items.length > 0) {
+        const productName = response.data.items[0].title; // Extract product name
+        Setname(productName);
+      } else {
+        console.log('Product not found');
+      }
+    } catch (err) {
+      console.error('Error fetching product name from API:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchInventory = () => {
     axios.get('http://localhost:5000/api/inventory')
@@ -77,21 +127,13 @@ const Inventory = () => {
         />
         <button type="submit">Add item</button>
       </form>
+      <div>
+        Or upload an image with a barcode:<br/>
+        <input type="file" onChange={handleFileUpload} />
+      </div>
     </div>
   );
 };
-
-
-// function Inventory() {
-//     return (
-//         <InventoryStyled>
-//             <header>
-//                 <img src={Logo} alt="Logo" className="logo" />
-//                 <h1 className="title">Pantry Management System (PaMS)</h1>
-//             </header>
-//         </InventoryStyled>
-//     )
-// }
 
 const InventoryStyled = styled.div`
     display: flex;
@@ -119,4 +161,4 @@ const InventoryStyled = styled.div`
         color: #222260;
     }
 `
-export default Inventory
+export default Inventory;

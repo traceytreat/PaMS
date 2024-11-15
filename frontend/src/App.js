@@ -1,53 +1,74 @@
 // Filename - App.js
 
-// From https://www.geeksforgeeks.org/how-to-connect-reactjs-with-flask-api/
-
 // Importing modules
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import styled from "styled-components";
-import {MainLayout} from './styles/Layouts';
+import { MainLayout } from './styles/Layouts';
 import NavigationBar from "./navigationBar/NavigationBar";
 import Checkout from "./Components/Checkout/Checkout";
 import Inventory from "./Components/Inventory/Inventory";
 import Reports from "./Components/Reports/Reports";
 import Members from "./Components/Members/Members";
 import DiscardedItems from "./Components/DiscardedItems/DiscardedItems";
+import Login from "./Components/Login/Login";
 
 function App() {
-    const [active, setActive] = React.useState(1)
+    const [active, setActive] = useState(1);
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [user, setUser] = useState({});
+
+    const handleLoginSuccess = (userData) => {
+        setUser(userData);
+        setLoggedIn(true);
+    };
+
+    const Logout = () => {
+        setLoggedIn(false);
+    };
 
     const displayData = () => {
-        switch(active) {
+        switch (active) {
             case 1:
-                return <Checkout />
+                return <Checkout />;
             case 2:
-                return <Inventory />
+                return <Inventory />;
             case 3:
-                return <Reports />
+                return <Reports />;
             case 4:
                 return <Members />
             case 5:
                 return <DiscardedItems />
             default:
-                return <Checkout />
+                return <Checkout />;
         }
-    }
+    };
+
     return (
         <AppStyled className="App">
-            <MainLayout>
-                <NavigationBar active={active} setActive={setActive} />
-                <main>
-                    {displayData()}
-                </main>
-            </MainLayout>
+            {!loggedIn ? (
+                <Login onLoginSuccess={handleLoginSuccess} />
+            ) : (
+                <MainLayout>
+                    <NavigationBar 
+                        active={active} 
+                        setActive={setActive} 
+                        username={user.username}
+                        role={user.role}
+                        techid={user.techid}
+                        onLogout={Logout}
+                    />
+                    <main>
+                        {displayData()}
+                    </main>
+                </MainLayout>
+            )}
         </AppStyled>
     );
 }
 
 const AppStyled = styled.div`
     height: 100vh;
-    background: linear-gradient(45deg, #AFD275, #D0E5A0);
     position: relative;
 
     main {
@@ -57,11 +78,10 @@ const AppStyled = styled.div`
         backdrop-filter: blur(4.5px);
         border-radius: 32px;
         overflow-x: hidden;
-        &::-webkit-scrollbar{
+        &::-webkit-scrollbar {
             width: 0;
         }
     }
-
 `;
 
 export default App;
