@@ -1,3 +1,4 @@
+import DiscardedItems from '../Components/DiscardedItems/DiscardedItems'
 import {Checkout, Inventory, Reports, Members} from './Icons'
 
 export const MenuItems = [
@@ -23,6 +24,12 @@ export const MenuItems = [
         id: 4,
         title: "Members",
         icon: Members,
+        link: "/dashboard",
+    },
+    {
+        id: 5,
+        title: "Discarded Items",
+        icon: Inventory,
         link: "/dashboard",
     },
 ]

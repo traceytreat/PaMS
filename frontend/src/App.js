@@ -10,6 +10,7 @@ import Checkout from "./Components/Checkout/Checkout";
 import Inventory from "./Components/Inventory/Inventory";
 import Reports from "./Components/Reports/Reports";
 import Members from "./Components/Members/Members";
+import DiscardedItems from "./Components/DiscardedItems/DiscardedItems";
 import Login from "./Components/Login/Login";
 
 function App() {
@@ -35,7 +36,9 @@ function App() {
             case 3:
                 return <Reports />;
             case 4:
-                return <Members />;
+                return <Members />
+            case 5:
+                return <DiscardedItems />
             default:
                 return <Checkout />;
         }
