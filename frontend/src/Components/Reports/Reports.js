@@ -8,8 +8,21 @@ const Reports = () => {
   const [month, setMonth] = useState("1");
   const [year, setYear] = useState("2023");
   const years = ["2023", "2024"];
-  const months = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
-  
+  const months = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+  ];
+
   const handleYear = (event) => {
     setYear(event.target.value);
   };

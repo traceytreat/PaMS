@@ -17,7 +17,7 @@ function Navigation({ active, setActive, username, role, techid, onLogout}) {
                 </div>
             </div>
             <ul className="menu-items">
-                {MenuItems.map((item) => {
+                {MenuItems.filter(item => item.role.includes(role)).map(item => {
                     return <li
                         key={item.id}
                         onClick={() => setActive(item.id)}
