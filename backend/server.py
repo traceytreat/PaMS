@@ -70,7 +70,7 @@ def get_users():
     session = get_db_session()
     users = session.query(user).all()
     user_list = [
-        {"id": user.id, "username": user.username, "role": user.role} for user in users
+        {"id": user.id, "techid": user.techid, "username": user.username, "role": user.role} for user in users
     ]
     session.close()
     return jsonify(user_list)
@@ -80,7 +80,6 @@ def get_users():
 def get_members():
     session = get_db_session()
     member = session.query(members).all()
-    print(showPoundsTaken(1))
     member_list = [
         {
             "id": member.id,
@@ -97,6 +96,24 @@ def get_members():
     ]
     session.close()
     return jsonify(member_list)
+
+@app.route("/api/member", methods=["GET"])
+def get_member_by_id():
+    session = get_db_session()
+    memberid = request.args.get("memberid", type=int)
+    memberData = session.query(members).get(memberid)
+    member = {
+        "firstname": memberData.firstname,
+        "lastname": memberData.lastname,
+        "techid": memberData.techid,
+        "address": memberData.address,
+        "minors": memberData.householdminors,
+        "adults": memberData.householdadults,
+        "seniors": memberData.householdseniors
+    }
+    session.close()
+    return jsonify(member)
+
 
 @app.route('/api/discardedItems', methods=['GET'])
 def get_discarded_items():
@@ -221,6 +238,7 @@ def add_members():
 @app.route('/api/members/<int:memberid>', methods=['PUT'])
 def update_member(memberid):
     user_data = request.json
+    print(memberid)
     session = get_db_session()
     member = session.query(members).filter(members.id == memberid).first()
 
@@ -229,9 +247,9 @@ def update_member(memberid):
         return jsonify({"message": "Member not found"}), 404
 
     member.techid = user_data.get("techid", members.techid)
-    member.firstname = user_data.get("first name", members.firstname)
-    member.lastname = user_data.get("last name", members.lastname)
-    member.address = user_data.get("address", members.addres)
+    member.firstname = user_data.get("firstname", members.firstname)
+    member.lastname = user_data.get("lastname", members.lastname)
+    member.address = user_data.get("address", members.address)
     member.householdminors = user_data.get("minors", members.householdminors)
     member.householdadults = user_data.get("adults", members.householdadults)
     member.householdseniors = user_data.get("seniors", members.householdseniors)
