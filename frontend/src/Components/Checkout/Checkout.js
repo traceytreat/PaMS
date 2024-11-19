@@ -213,19 +213,19 @@ const handleCheckout = () => {
     };
 
 const CheckoutStyled = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
 
-    header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 2rem;
-        gap: 1rem;
-    }
+  header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+  }
 
     .checkout-display {
         display: flex;
@@ -344,39 +344,39 @@ const CheckoutStyled = styled.div`
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .SKU-container {
-        display: flex;
-        width: 95%;
-        gap: 1rem;
-    }
+  .SKU-container {
+    display: flex;
+    width: 95%;
+    gap: 1rem;
+  }
 
-    .SKUbox {
-        width: 90%;
-        height: 75px;
-        background-color: #f4f4f9;
-        border: 2px solid #222260;
-        padding: 1rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        font-size: 2rem;
-    }
+  .SKUbox {
+    width: 90%;
+    height: 75px;
+    background-color: #f4f4f9;
+    border: 2px solid #222260;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 2rem;
+  }
 
-    .submit-btn {
-        width: 25%;
-        height: 75px;
-        padding: 0.5rem 1rem;
-        background-color: #AFD275;
-        color: rgba(34, 34, 96, 1);
-        font-weight: bold;
-        border-radius: 8px;
-        font-size: 1.5rem;
-        cursor: pointer;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+  .submit-btn {
+    width: 25%;
+    height: 75px;
+    padding: 0.5rem 1rem;
+    background-color: #afd275;
+    color: rgba(34, 34, 96, 1);
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 
-    .submit-btn:hover {
-        background-color: #D0E5A0;
-    }
+  .submit-btn:hover {
+    background-color: #d0e5a0;
+  }
 
     .modal {
         background-color: #222260;
@@ -397,11 +397,11 @@ const CheckoutStyled = styled.div`
         height: auto;
     }
 
-    .title {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #222260;
-    }
+  .title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #222260;
+  }
 `;
 
 export default Checkout;
