@@ -4,7 +4,7 @@
 # Import flask and datetime module for showing date and time
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from database import user, members, inventory, get_db_session
+from database import user, members, inventory, visits, get_db_session
 # Initializing flask app
 app = Flask(__name__)
 CORS(app)
@@ -64,7 +64,6 @@ def add_members():
     session.close()
     return jsonify({'message': 'member added successfully!'}), 201
 
-    
 # Running app
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5000)
