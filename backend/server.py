@@ -210,7 +210,7 @@ def add_discardedItems():
 def add_user():
     user_data = request.json
     session = get_db_session()
-    new_user = user(username=user_data["username"], password=user_data["password"] ,role=user_data["role"])
+    new_user = user(username=user_data["username"], techid=user_data["techid"], password=user_data["password"] ,role=user_data["role"])
     session.add(new_user)
     session.commit()
     session.close()
