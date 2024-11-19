@@ -34,3 +34,10 @@ Navigate to the frontend folder. (If you're already in the backend folder, `cd .
 Run `npm start`
 
 The client should open automatically, otherwise go to localhost:3000
+
+## First Login
+
+Default login Credentials:
+
+Username: Josh
+Password: password
