@@ -31,15 +31,16 @@ const EditMembers = () => {
       .get("http://localhost:5000/api/member", {
         params: { memberid: memberidLookup },
       })
-      .then((response) => setMember(response.data))
+      .then((response) => {setMember(response.data);
+        SetFirstname(response.data.firstname);
+        setLastname(response.data.lastname);
+        setAdress(response.data.address);
+        setTechid(response.data.techid);
+        SetMinors(response.data.minors);
+        setAdults(response.data.adults);
+        setSeniors(response.data.seniors);
+      })
       .catch((error) => console.error("Error fetching members:", error));
-    SetFirstname(member.firstname);
-    setLastname(member.lastname);
-    setAdress(member.address);
-    setTechid(member.techid);
-    SetMinors(member.minors);
-    setAdults(member.adults);
-    setSeniors(member.seniors);
   };
 
   const editMember = (e) => {
