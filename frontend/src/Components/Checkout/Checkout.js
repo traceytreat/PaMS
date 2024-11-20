@@ -30,7 +30,8 @@ const Checkout = () => {
       }, []);
 
 
-const checkIn = () => {
+const checkIn = (e) => {
+    e.preventDefault();
     axios
         .get('http://localhost:5000/api/member', {
             params: {memberid : techID},
@@ -58,6 +59,7 @@ function total(data) {
 
 // Take SKU -> find SKU in inventory -> add info to cart
 const addToCart = (sku) => {
+    sku.preventDefault();
     const newItem = inventory.find(product => product.sku === sku);
     if (newItem !== undefined) {
         if (cart.includes(product => product.sku === sku)) {
