@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import styled from "styled-components";
-import Logo from "../../img/Logo.png";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 
 const DiscardedItems = () => {
   const [discardedItems, setDiscardedItems] = useState([]);
@@ -9,6 +16,7 @@ const DiscardedItems = () => {
   const [quantity, setQuantity] = useState("");
   const [reason, setReason] = useState("");
 
+  // Fetch discarded items from the API
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/discardedItems")
@@ -25,74 +33,65 @@ const DiscardedItems = () => {
       .then((response) => {
         console.log(response.data);
         setDiscardedItems([...discardedItems, newDiscardedItems]);
+        setSku("");
+        setQuantity("");
+        setReason("");
       })
       .catch((error) => console.error("Error adding item:", error));
   };
 
   return (
-    <div>
-      <h1>Discarded Items List</h1>
-      <ul>
+    <Box sx={{ p: 3, maxWidth: 600, mx: "auto" }}>
+      <Typography variant="h4" gutterBottom>
+        Discarded Items List
+      </Typography>
+      <List>
         {discardedItems.map((item, index) => (
-          <li key={index}>
-            {item.sku} - {item.quantity} - {item.reason} - {item.discarddate}
-          </li>
+          <ListItem key={index}>
+            <ListItemText
+              primary={`SKU: ${item.sku} - Quantity: ${item.quantity}`}
+              secondary={`Reason: ${item.reason} | Date: ${item.discarddate}`}
+            />
+          </ListItem>
         ))}
-      </ul>
+      </List>
 
-      <h2>Log Discarded Item</h2>
-      <form onSubmit={addDiscardedItems}>
-        <input
-          type="text"
+      <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>
+        Log Discarded Item
+      </Typography>
+      <Box
+        component="form"
+        onSubmit={addDiscardedItems}
+        sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+      >
+        <TextField
+          label="SKU"
           value={sku}
           onChange={(e) => setSku(e.target.value)}
-          placeholder="SKU"
+          fullWidth
           required
         />
-        <input
-          type="Quantity"
+        <TextField
+          label="Quantity"
           value={quantity}
+          type="number"
           onChange={(e) => setQuantity(e.target.value)}
-          placeholder="Quanitity"
+          fullWidth
           required
         />
-        <input
-          type="Reason"
+        <TextField
+          label="Reason"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
-          placeholder="Reason"
+          fullWidth
           required
         />
-        <button type="submit">Log Discarded Item</button>
-      </form>
-    </div>
+        <Button type="submit" variant="contained" color="primary">
+          Log Discarded Item
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
-const DiscardedItemsStyled = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.5rem;
-
-  header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
-    gap: 1rem;
-  }
-
-  .logo {
-    width: 80px;
-    height: auto;
-  }
-
-  .title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #222260;
-  }
-`;
 export default DiscardedItems;

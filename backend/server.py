@@ -205,6 +205,15 @@ def add_discardedItems():
     session.close()
     return jsonify({"message": "Added succesfully"}, 201)
 
+@app.route("/api/visits", methods=["POST"])
+def add_visit():
+    itemdata = request.json
+    session = get_db_session()
+    new_visit= visits(memberid=itemdata["memberid"], poundstaken=itemdata["poundstaken"])
+    session.add(new_visit)
+    session.commit()
+    session.close()
+    return jsonify({"message": "Added succesfully"}, 201)
 
 @app.route("/api/users", methods=["POST"])
 def add_user():
@@ -235,6 +244,16 @@ def add_members():
     session.close()
     return jsonify({'message': 'member added successfully!'}), 201
     
+@app.route('/api/visits', methods=['POST'])
+def log_visit():
+    visit_data = request.json
+    session = get_db_session()
+    new_visit = visits(memberid=visit_data['memberid'], poundstaken=visit_data['poundstaken'])
+    session.add(new_visit)
+    session.commit()
+    session.close()
+    return jsonify({'message': 'visit added successfully!'}), 201
+
 @app.route('/api/members/<int:memberid>', methods=['PUT'])
 def update_member(memberid):
     user_data = request.json
@@ -286,7 +305,6 @@ def delete_user(userid):
     session.commit()
     session.close()
     return jsonify({"message": "User deleted successfully"}), 200
-
 
 @app.route('/api/login', methods=['POST'])
 def login():

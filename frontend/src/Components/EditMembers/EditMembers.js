@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import styled from "styled-components";
-import Logo from "../../img/Logo.png";
+import {
+  Box,
+  Button,
+  Select,
+  MenuItem,
+  TextField,
+  InputLabel,
+  FormControl,
+  Typography,
+} from "@mui/material";
 
 const EditMembers = () => {
   const [member, setMember] = useState([]);
@@ -9,12 +17,13 @@ const EditMembers = () => {
   const [firstname, SetFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [techid, setTechid] = useState("");
-  const [address, setAdress] = useState("");
+  const [address, setAddress] = useState("");
   const [minors, SetMinors] = useState("");
   const [adults, setAdults] = useState("");
   const [seniors, setSeniors] = useState("");
   const [memberidLookup, setMemberid] = useState("");
-  // Fetch users from Flask API
+
+  // Fetch members from Flask API
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/members")
@@ -31,16 +40,17 @@ const EditMembers = () => {
       .get("http://localhost:5000/api/member", {
         params: { memberid: memberidLookup },
       })
-      .then((response) => {setMember(response.data);
+      .then((response) => {
+        setMember(response.data);
         SetFirstname(response.data.firstname);
         setLastname(response.data.lastname);
-        setAdress(response.data.address);
+        setAddress(response.data.address);
         setTechid(response.data.techid);
         SetMinors(response.data.minors);
         setAdults(response.data.adults);
         setSeniors(response.data.seniors);
       })
-      .catch((error) => console.error("Error fetching members:", error));
+      .catch((error) => console.error("Error fetching member:", error));
   };
 
   const editMember = (e) => {
@@ -54,86 +64,98 @@ const EditMembers = () => {
       adults,
       seniors,
     };
-    axios.put(
-      "http://localhost:5000/api/members/" + memberidLookup,
-      updatedMember
-    );
+    axios
+      .put(`http://localhost:5000/api/members/${memberidLookup}`, updatedMember)
+      .then(() => alert("Member updated successfully!"))
+      .catch((error) => console.error("Error updating member:", error));
   };
 
   return (
-    <div>
-      <select value={memberidLookup} onChange={handleId}>
-        <option value="" disabled>
-          Select a Member
-        </option>
-        {members.map((member, index) => (
-          <option key={index} value={member.id}>
-            {member.firstname + " " + member.lastname}
-          </option>
-        ))}
-      </select>
-      {/* <input type="text" value={memberidLookup} onChange={handleId}></input> */}
-      <button onClick={handleSearch}>Lookup member</button>
-      <h1>Member List</h1>
-      <input
-        value={firstname}
-        onChange={(e) => SetFirstname(e.target.value)}
-      ></input>
-      <input
-        value={lastname}
-        onChange={(e) => setLastname(e.target.value)}
-      ></input>
-      <input value={techid} onChange={(e) => setTechid(e.target.value)}></input>
-      <input
-        value={address}
-        onChange={(e) => setAdress(e.target.value)}
-      ></input>
-      <input value={minors} onChange={(e) => SetMinors(e.target.value)}></input>
-      <input value={adults} onChange={(e) => setAdults(e.target.value)}></input>
-      <input
-        value={seniors}
-        onChange={(e) => setSeniors(e.target.value)}
-      ></input>
-      <button onClick={editMember}>Edit member</button>
-    </div>
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        Edit Members
+      </Typography>
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel>Select a Member</InputLabel>
+        <Select value={memberidLookup} onChange={handleId}>
+          <MenuItem value="" disabled>
+            Select a Member
+          </MenuItem>
+          {members.map((member) => (
+            <MenuItem key={member.id} value={member.id}>
+              {member.firstname + " " + member.lastname}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <Button
+        variant="contained"
+        onClick={handleSearch}
+        sx={{ mb: 3 }}
+      >
+        Lookup Member
+      </Button>
+      <Box
+        component="form"
+        onSubmit={editMember}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          maxWidth: 400,
+        }}
+      >
+        <TextField
+          label="First Name"
+          value={firstname}
+          onChange={(e) => SetFirstname(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Last Name"
+          value={lastname}
+          onChange={(e) => setLastname(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Tech ID"
+          value={techid}
+          onChange={(e) => setTechid(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Minors (0-17)"
+          type="number"
+          value={minors}
+          onChange={(e) => SetMinors(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Adults (18-64)"
+          type="number"
+          value={adults}
+          onChange={(e) => setAdults(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Seniors (65+)"
+          type="number"
+          value={seniors}
+          onChange={(e) => setSeniors(e.target.value)}
+          fullWidth
+        />
+        <Button variant="contained" color="primary" type="submit">
+          Update Member
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
-// function Members() {
-//     return (
-//         <MembersStyled>
-//             <header>
-//                 <img src={Logo} alt="Logo" className="logo" />
-//                 <h1 className="title">Pantry Management System (PaMS)</h1>
-//             </header>
-//         </MembersStyled>
-//     )
-// }
-
-const MembersStyled = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.5rem;
-
-  header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
-    gap: 1rem;
-  }
-
-  .logo {
-    width: 80px;
-    height: auto;
-  }
-
-  .title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #222260;
-  }
-`;
 export default EditMembers;
