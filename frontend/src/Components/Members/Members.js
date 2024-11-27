@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { DataGrid } from "@mui/x-data-grid";
 import styled from "styled-components";
+import { DataGrid } from "@mui/x-data-grid";
 
 const Members = () => {
   const [members, setMembers] = useState([]);

@@ -205,6 +205,15 @@ def add_discardedItems():
     session.close()
     return jsonify({"message": "Added succesfully"}, 201)
 
+@app.route("/api/visits", methods=["POST"])
+def add_visit():
+    itemdata = request.json
+    session = get_db_session()
+    new_visit= visits(memberid=itemdata["memberid"], poundstaken=itemdata["poundstaken"])
+    session.add(new_visit)
+    session.commit()
+    session.close()
+    return jsonify({"message": "Added succesfully"}, 201)
 
 @app.route("/api/users", methods=["POST"])
 def add_user():
