@@ -3,6 +3,9 @@ import axios from "axios";
 import styled from "styled-components";
 import Quagga from "quagga";
 import Logo from "../../img/Logo.png";
+import { DataGrid } from "@mui/x-data-grid";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Inventory = () => {
   const [inventory, setInventory] = useState([]);
@@ -104,42 +107,59 @@ const Inventory = () => {
       .catch((error) => console.error("Error adding item:", error));
   };
 
-  return (
-    <div>
-      <h1>Inventory</h1>
-      <ul>
-        {inventory.map((item, index) => (
-          <li key={index}>
-            {item.sku} - {item.name} - Qty: {item.quantity}
-            <button onClick={() => deleteitem(item.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+  const columns = [
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "sku", headerName: "SKU", width: 150 },
+    { field: "name", headerName: "Name", width: 200 },
+    { field: "quantity", headerName: "Quantity", width: 100 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      renderCell: (params) => (
+        <IconButtonStyled onClick={() => deleteitem(params.row.id)}>
+          <DeleteIcon />
+        </IconButtonStyled>
+      ),
+    },
+  ];
 
-      <h2>Add item</h2>
+  const rows = inventory.map((item, index) => ({
+    id: index + 1,
+    ...item,
+  }));
+  return (
+    <InventoryStyled>
+      <h1>Inventory</h1>
+      <div style={{ height: 400, width: "100%" }}>
+        <DataGrid rows={rows} columns={columns} pageSize={5} />
+      </div>
+
+      <h2>Add Item</h2>
       <form onSubmit={additem}>
         <input
           type="text"
           value={sku}
           onChange={(e) => Setsku(e.target.value)}
-          placeholder="sku"
+          placeholder="SKU"
           required
         />
         <input
           type="text"
           value={name}
           onChange={(e) => Setname(e.target.value)}
-          placeholder="name"
+          placeholder="Name"
           required
         />
-        <button type="submit">Add item</button>
+        <button className="add-item-button" type="submit">Add Item</button>
       </form>
+
       <div>
         Or upload an image with a barcode:
         <br />
         <input type="file" onChange={handleFileUpload} />
       </div>
-    </div>
+    </InventoryStyled>
   );
 };
 
@@ -147,26 +167,64 @@ const InventoryStyled = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.5rem;
+  padding: 1rem;
+  width: 100%;
 
-  header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
-    gap: 1rem;
-  }
-
-  .logo {
-    width: 80px;
-    height: auto;
-  }
-
-  .title {
+  h1 {
     font-size: 2rem;
-    font-weight: bold;
-    color: #222260;
+    margin-bottom: 1rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    width: 300px;
+  }
+
+  input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    padding: 0.5rem;
+    font-size: 1rem;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-item-button {
+    background-color: #007bff;
+  }
+
+  .add-item-button:hover {
+    background-color: #0056b3;
+  }
+
+  .delete-btn {
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
   }
 `;
+
+const IconButtonStyled = styled(IconButton)`
+  background-color: red !important;
+  color: white !important;
+  padding: 8px;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: darkred !important;
+  }
+`;
+
+
 export default Inventory;
