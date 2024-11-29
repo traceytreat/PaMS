@@ -153,6 +153,12 @@ const Inventory = () => {
         />
         <button className="add-item-button" type="submit">Add Item</button>
       </form>
+
+      <div>
+        Or upload an image with a barcode:
+        <br />
+        <input type="file" onChange={handleFileUpload} />
+      </div>
     </InventoryStyled>
   );
 };
@@ -214,7 +220,7 @@ const IconButtonStyled = styled(IconButton)`
   color: white !important;
   padding: 8px;
   border-radius: 4px;
-  
+
   &:hover {
     background-color: darkred !important;
   }
