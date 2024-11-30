@@ -6,7 +6,7 @@ import Logo from '../../img/Logo.png';
 
 const Checkout = () => {
     const [member, setMember] = useState({});
-    const [techID, setID] = useState('');
+    const [memberID, setID] = useState('');
     const [sku, setSKU] = useState('');
     const [weightTotal, setWeight] = useState('');
     const [poundsLeft, setPounds] = useState(50);
@@ -25,7 +25,7 @@ const Checkout = () => {
         e.preventDefault()
         axios
             .get('http://localhost:5000/api/member', {
-                params: {memberid: techID},
+                params: {memberid: memberID},
             })
             .then(response => {
                 setMember(response.data);
@@ -35,7 +35,7 @@ const Checkout = () => {
         if (checkInStatus) {
             axios
                 .get('http://localhost:5000/api/report/totaltaken', {
-                    params: {member_id: techID},
+                    params: {member_id: memberID},
                 })
                 .then(response => setPounds(50 - response.data))
                 .catch(error => {
@@ -117,7 +117,7 @@ const Checkout = () => {
         } else
             if (parseFloat(weightTotal) <= poundsLeft) {
                 const newVisit = {
-                    memberid: techID,
+                    memberid: memberID,
                     poundstaken: parseFloat(weightTotal)
                 }
                 axios
@@ -150,11 +150,11 @@ const Checkout = () => {
                 <div className="visitor">
                     <form onSubmit={checkIn}>
                         <input
-                            name="techid"
-                            value={techID}
+                            name="memberid"
+                            value={memberID}
                             onChange={(e) => setID(e.target.value)}
                             type="text"
-                            placeholder="tech ID"
+                            placeholder="Member ID"
                             required
                         />
                         <div/>
